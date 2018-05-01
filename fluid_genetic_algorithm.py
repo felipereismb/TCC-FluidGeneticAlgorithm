@@ -2,8 +2,8 @@
 
 # Imports Necessários
 import random
+import numpy as np
 from cromossomo import Cromossomo
-
 
 class FluidGeneticAlgorithm():
 
@@ -208,3 +208,55 @@ class FluidGeneticAlgorithm():
         # Remove o ultimo
         self.cromossomos = self.cromossomos[:-1]
         self.recalcularBluePrint()
+
+    # Get Parametros para Grid Search
+    def getParamsGrid(self):
+        params_grid = {}
+
+        params_grid['criterion'] = ['gini', 'entropy']
+        params_grid['splitter'] = ['best', 'random']
+        params_grid['presort'] = [False, True]
+
+        lista_max_depth = []
+        lista_min_samples_split = []
+        lista_min_samples_leaf = []
+        lista_min_weight_fraction_leaf = []
+
+        lista_max_depth.append(None)
+        tamanho = len(self.cromossomos)
+        tamanho = int(tamanho/2)
+        for i in range(tamanho):
+            aux = self.cromossomos[i]
+
+            lista_max_depth.append(aux.getMaxDepth())
+            lista_min_samples_split.append(aux.getMinSamplesSplit())
+            lista_min_samples_leaf.append(aux.getMinSamplesLeaf())
+            lista_min_weight_fraction_leaf.append(aux.getMinWeigthFractionLeaf())
+
+        params_grid['max_depth'] = self.remove_repetidos(lista_max_depth)
+        params_grid['min_samples_split'] = self.remove_repetidos(lista_min_samples_split)
+        params_grid['min_samples_leaf'] = self.remove_repetidos(lista_min_samples_leaf)
+        params_grid['min_weight_fraction_leaf'] = self.remove_repetidos(lista_min_weight_fraction_leaf)
+
+        return params_grid
+
+    def remove_repetidos(self,lista):
+        l = []
+        for i in lista:
+            if i not in l:
+                l.append(i)
+
+        return l
+
+    def getBestParamGrid(self):
+        params_grid = {}
+
+        params_grid['criterion'] = [self.cromossomos[0].getCriterion()]
+        params_grid['splitter'] = [self.cromossomos[0].getSplitter()]
+        params_grid['presort'] = [self.cromossomos[0].getPresort()]
+        params_grid['max_depth'] = [self.cromossomos[0].getMaxDepth()]
+        params_grid['min_samples_split'] = [self.cromossomos[0].getMinSamplesSplit()]
+        params_grid['min_samples_leaf'] = [self.cromossomos[0].getMinSamplesLeaf()]
+        params_grid['min_weight_fraction_leaf'] = [self.cromossomos[0].getMinWeigthFractionLeaf()]
+
+        return params_grid
