@@ -133,6 +133,8 @@ class Cromossomo():
         dataset = StellPlatesDataset()  # Carrega o dataset a ser usado nos testes
         # dataset = datasets.load_iris()
         # dataset = datasets.load_wine()
+        # dataset = datasets.load_digits()
+        # dataset = datasets.load_breast_cancer()
 
         # Carrega o algoritmo de ML que será utilizado (No caso, árvore de decisão = DecisionTreeClassifier() )
         # AQUI, nós passaremos os parâmetros, pois é aqui que usamos o Cromossomo, para poder testa-lo e obter calcular seu fitnes

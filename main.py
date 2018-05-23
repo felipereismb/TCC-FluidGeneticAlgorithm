@@ -9,6 +9,7 @@ from sklearn.grid_search import GridSearchCV
 from cromossomo import Cromossomo
 
 import numpy as np
+import pandas as pd
 
 class Main():
     # #######################################################################################
@@ -18,6 +19,16 @@ class Main():
     dataset = StellPlatesDataset()  
     # dataset = datasets.load_iris()
     # dataset = datasets.load_wine()
+    # dataset = datasets.load_digits()
+    # dataset = datasets.load_breast_cancer()
+
+    # nome_base_dados = "cancer"
+
+    # data = pd.read_csv('data/'+nome_base_dados+'.csv')
+    # list = ['classe']
+    # y = data.classe
+    # X = data.drop(list,axis = 1)
+    # print(y)
 
     # Parâmetros Default para Grid Search
     param_grid_default = {
@@ -34,7 +45,7 @@ class Main():
     clf = DecisionTreeClassifier(random_state=0)
 
     # Instanciar Grid Search com os parâmetros default
-    grid_default = GridSearchCV(clf, param_grid_default, cv=10, scoring='accuracy')
+    # grid_default = GridSearchCV(clf, param_grid_default, cv=10, scoring='accuracy')
 
     # Chama a função fit e realiza a montagem da árvore
     scores = cross_validation.cross_val_score(clf, dataset.data, dataset.target, cv=10)
@@ -48,15 +59,15 @@ class Main():
     print("Individuo Default = Acuracia: {} - Size: {}\n".format(acuracia, size))
 
     # fit the grid with data
-    grid_default.fit(dataset.data, dataset.target)
+    # grid_default.fit(dataset.data, dataset.target)
     # examine the best model
 
     # Single best score 
-    best_score = round(100*grid_default.best_score_, 2)
-    print(best_score)
+    # best_score = round(100*grid_default.best_score_, 2)
+    # print(best_score)
 
     # Dictionary containing the parameters
-    print(grid_default.best_params_)
+    # print(grid_default.best_params_)
 
     # Actual model object fit with those best parameters
     # Shows default parameters that we did not specify
@@ -67,25 +78,29 @@ class Main():
     taxa_aprendizado_global = 0.1
     taxa_aprendizado_individual = 0.1
     taxa_diversidade = 0
-    tamanho_populacao_inicial = 20
+    tamanho_populacao_inicial = 100
 
     FGA = FluidGeneticAlgorithm(taxa_aprendizado_global, taxa_aprendizado_individual, taxa_diversidade, tamanho_populacao_inicial)
 
-    FGA.imprimirPopulacao()
+    # FGA.imprimirPopulacao()
+    print ('Individuo: {} - Size: {} - Acuracia: {}'.format(
+                FGA.cromossomos[0].individuo, FGA.cromossomos[0].size, FGA.cromossomos[0].acuracia))
     
-    for i in range(100):
+    for i in range(1000):
         FGA.operacao()
 
-    FGA.imprimirPopulacao()
+    # FGA.imprimirPopulacao()
+    print ('Individuo: {} - Size: {} - Acuracia: {}'.format(
+                FGA.cromossomos[0].individuo, FGA.cromossomos[0].size, FGA.cromossomos[0].acuracia))
     print("\n")
 
-    param_grid = FGA.getParamsGrid()
-    # param_grid = FGA.getBestParamGrid()
+    # param_grid = FGA.getParamsGrid()
+    # # param_grid = FGA.getBestParamGrid()
 
-    grid = GridSearchCV(clf, param_grid, cv=10, scoring='accuracy')
-    grid.fit(dataset.data, dataset.target)
-    print(grid.best_score_ * 100)
-    print(grid.best_params_)
+    # grid = GridSearchCV(clf, param_grid, cv=10, scoring='accuracy')
+    # grid.fit(dataset.data, dataset.target)
+    # print(grid.best_score_ * 100)
+    # print(grid.best_params_)
     
     # {'min_samples_split': 294, 'max_depth': None, 'min_samples_leaf': 11,
     #     'min_weight_fraction_leaf': 0.0, 'splitter': 'best', 'presort': False, 'criterion': 'entropy'}

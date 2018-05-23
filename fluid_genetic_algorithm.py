@@ -5,6 +5,7 @@ import random
 import numpy as np
 from cromossomo import Cromossomo
 
+
 class FluidGeneticAlgorithm():
 
     blue_print = []
@@ -14,7 +15,8 @@ class FluidGeneticAlgorithm():
     taxa_diversidade = 0
 
     def __init__(self, taxa_global, taxa_individual, taxa_de_diversidade, tamanho_populacao_inicial):
-        self.inicializarVariaveis(taxa_global, taxa_individual, taxa_de_diversidade)
+        self.inicializarVariaveis(
+            taxa_global, taxa_individual, taxa_de_diversidade)
         self.inicializarPopulacao(tamanho_populacao_inicial)
         self.ordenarPopulacao()
 
@@ -36,7 +38,7 @@ class FluidGeneticAlgorithm():
     def imprimirPopulacao(self):
         print("\n\n")
         for i in range(0, len(self.cromossomos)):
-            print ('Individuo: {} - Size: {} - Acuracia: {}'.format(
+            print('Individuo: {} - Size: {} - Acuracia: {}'.format(
                 self.cromossomos[i].individuo, self.cromossomos[i].size, self.cromossomos[i].acuracia))
 
     def gerarUmIndividuo(self):
@@ -103,7 +105,8 @@ class FluidGeneticAlgorithm():
 
     def ordenarPopulacao(self):
         # Ordena a lista pelo fitness (key = lambda cromossomo: cromossomo.fitness)
-        listaOrdenada = sorted(self.cromossomos, key=lambda cromossomo: cromossomo.fitness, reverse=True)
+        listaOrdenada = sorted(
+            self.cromossomos, key=lambda cromossomo: cromossomo.fitness, reverse=True)
         self.cromossomos = listaOrdenada
 
     def bornAnIndividual(self, listaCromossomoNovo):
@@ -121,13 +124,23 @@ class FluidGeneticAlgorithm():
             else:
                 novoCromossomo.append(round(epvi, 2))
 
-            if(novoCromossomo[i] > 0.5):
+            # if(novoCromossomo[i] > 0.5):
+            #     novoIndividuo += '1'
+            # else:
+            #     novoIndividuo += '0'
+
+            if(novoCromossomo[i] <= self.lancarMoeda()):
                 novoIndividuo += '1'
             else:
                 novoIndividuo += '0'
 
         cromossomo = Cromossomo(novoIndividuo, novoCromossomo)
         return cromossomo
+
+    def lancarMoeda(self):
+        moedaLancada = random.randint(10, 100)
+        moedaLancada = moedaLancada * 0.01
+        return moedaLancada
 
     def recalcularBluePrint(self):
         valor = 0
@@ -187,29 +200,116 @@ class FluidGeneticAlgorithm():
         # Retorna a lista de probabilidade de cada bit do cromossomo
         return cromossomoFilho
 
-    def verificaSeContemNaPopulacao(self,cromossomo):
+    def cruzamentoComPontoDeCorte(self, pai1, pai2):
+        cromossomoFilho = []
+        individuoFilho = ''
+        # 0 0 000000 0000000010 0000000001 101 0
+        # Faz o crossover, pegando, alternadamente o bit do pai1 e do pai2
+        individuoFilho += pai1.individuo[0] + pai2.individuo[1] + pai1.individuo[2:8] +pai2.individuo[8:18]+ pai1.individuo[18:28] + pai2.individuo[28:31] +pai1.individuo[31]
+
+        cromossomoFilho.append(pai1.cromossomo[0])
+        cromossomoFilho.append(pai2.cromossomo[1])
+        for i in range(2,8):
+            cromossomoFilho.append(pai1.cromossomo[i])
+        for i in range(8,18):
+            cromossomoFilho.append(pai2.cromossomo[i])
+        for i in range(18,28):
+            cromossomoFilho.append(pai1.cromossomo[i])
+        for i in range(28,31):
+            cromossomoFilho.append(pai2.cromossomo[i])
+        cromossomoFilho.append(pai1.cromossomo[31])
+
+        # Faz o calculo da taxa e aprendizado individual
+        # Se o bit do individuo for 1: taxa gerada pelo cruzamento + taxa de aprendeizadado individual
+        # Se o bit do individuo for 0: taxa gerada pelo cruzamento - taxa de aprendeizadado individual
+        for i in range(32):
+            if(individuoFilho[i] == 1):
+                valor = cromossomoFilho[i] + self.taxa_aprendizado_individual
+                if(valor > 1):
+                    cromossomoFilho[i] = 1
+                else:
+                    cromossomoFilho[i] = round(valor, 2)
+            else:
+                valor = cromossomoFilho[i] - self.taxa_aprendizado_individual
+                if(valor < 0):
+                    cromossomoFilho[i] = 0
+                else:
+                    cromossomoFilho[i] = round(valor, 2)
+
+        # Retorna a lista de probabilidade de cada bit do cromossomo
+        return cromossomoFilho
+
+    def verificaSeContemNaPopulacao(self, cromossomo):
         for i in range(len(self.cromossomos)):
             if(self.cromossomos[i].individuo == cromossomo.individuo):
                 return self.verificaSeContemNaPopulacao(self.gerarUmIndividuo())
         return cromossomo
 
+    def cruzamentoPais(self, pai1, pai2):
+        listaCromossomoNovo = self.cruzamento(pai1, pai2)
+        cromossomoResultante = self.bornAnIndividual(listaCromossomoNovo)
+        cromossomoResultante = self.verificaSeContemNaPopulacao(
+            cromossomoResultante)
+        return cromossomoResultante
+
+    def cruzamentoPaisPC(self, pai1, pai2):
+        listaCromossomoNovo = self.cruzamentoComPontoDeCorte(pai1, pai2)
+        cromossomoResultante = self.bornAnIndividual(listaCromossomoNovo)
+        cromossomoResultante = self.verificaSeContemNaPopulacao(cromossomoResultante)
+        return cromossomoResultante
+
     # Ciclo do Algoritmo FGA
     def operacao(self):
 
         pai1, pai2 = self.selecaoPaisRandom()
-        listaCromossomoNovo = self.cruzamento(pai1, pai2)
-        cromossomoResultante = self.bornAnIndividual(listaCromossomoNovo)
+        pai3, pai4 = self.selecaoPaisElitismo()
 
-        cromossomoResultante = self.verificaSeContemNaPopulacao(cromossomoResultante)
+        # listaCromossomoNovo = self.cruzamento(pai1, pai2)
+        # listaCromossomoNovo2 = self.cruzamento(pai3, pai4)
 
-        self.cromossomos.append(cromossomoResultante)
-        self.ordenarPopulacao()
+        # cromossomoResultante = self.bornAnIndividual(listaCromossomoNovo)
+        # cromossomoResultante = self.verificaSeContemNaPopulacao(cromossomoResultante)
 
-        # Remove o ultimo
-        self.cromossomos = self.cromossomos[:-1]
+        # cromossomoResultante2 = self.bornAnIndividual(listaCromossomoNovo2)
+        # cromossomoResultante2 = self.verificaSeContemNaPopulacao(cromossomoResultante2)
+
+        # cromossomoResultante3 = self.cruzamentoPais(pai1, pai4)
+        # cromossomoResultante4 = self.cruzamentoPais(pai2, pai3)
+        # cromossomoResultante5 = self.cruzamentoPais(pai2, pai4)
+        cromossomoResultante1 = self.cruzamentoPais(pai3, pai4)
+        cromossomoResultante2 = self.cruzamentoPais(pai4, pai3)
+        cromossomoResultante3 = self.cruzamentoPais(pai1, pai2)
+        cromossomoResultante4 = self.cruzamentoPais(pai3, pai1)
+
+        # cromossomoResultante12 = self.cruzamentoPaisPC(pai1, pai2)
+        # cromossomoResultante22 = self.cruzamentoPaisPC(pai1, pai3)
+        # cromossomoResultante32 = self.cruzamentoPaisPC(pai1, pai4)
+        # cromossomoResultante42 = self.cruzamentoPaisPC(pai2, pai3)
+        # cromossomoResultante52 = self.cruzamentoPaisPC(pai2, pai4)
+        # cromossomoResultante62 = self.cruzamentoPaisPC(pai3, pai4)
+
+        self.cromossomos.append(cromossomoResultante1)
+        self.cromossomos.append(cromossomoResultante2)
+        self.cromossomos.append(cromossomoResultante3)
+        self.cromossomos.append(cromossomoResultante4)
+        # self.cromossomos.append(cromossomoResultante5)
+        # self.cromossomos.append(cromossomoResultante6)
+
+        # self.cromossomos.append(cromossomoResultante12)
+        # self.cromossomos.append(cromossomoResultante22)
+        # self.cromossomos.append(cromossomoResultante32)
+        # self.cromossomos.append(cromossomoResultante42)
+        # self.cromossomos.append(cromossomoResultante52)
+        # self.cromossomos.append(cromossomoResultante62)
+
+        # self.ordenarPopulacao()
+
+        # Remove os 12 ultimo
+        self.cromossomos = self.cromossomos[:-4]
         self.recalcularBluePrint()
 
     # Get Parametros para Grid Search
+
     def getParamsGrid(self):
         params_grid = {}
 
@@ -231,16 +331,20 @@ class FluidGeneticAlgorithm():
             lista_max_depth.append(aux.getMaxDepth())
             lista_min_samples_split.append(aux.getMinSamplesSplit())
             lista_min_samples_leaf.append(aux.getMinSamplesLeaf())
-            lista_min_weight_fraction_leaf.append(aux.getMinWeigthFractionLeaf())
+            lista_min_weight_fraction_leaf.append(
+                aux.getMinWeigthFractionLeaf())
 
         params_grid['max_depth'] = self.remove_repetidos(lista_max_depth)
-        params_grid['min_samples_split'] = self.remove_repetidos(lista_min_samples_split)
-        params_grid['min_samples_leaf'] = self.remove_repetidos(lista_min_samples_leaf)
-        params_grid['min_weight_fraction_leaf'] = self.remove_repetidos(lista_min_weight_fraction_leaf)
+        params_grid['min_samples_split'] = self.remove_repetidos(
+            lista_min_samples_split)
+        params_grid['min_samples_leaf'] = self.remove_repetidos(
+            lista_min_samples_leaf)
+        params_grid['min_weight_fraction_leaf'] = self.remove_repetidos(
+            lista_min_weight_fraction_leaf)
 
         return params_grid
 
-    def remove_repetidos(self,lista):
+    def remove_repetidos(self, lista):
         l = []
         for i in lista:
             if i not in l:
@@ -255,8 +359,11 @@ class FluidGeneticAlgorithm():
         params_grid['splitter'] = [self.cromossomos[0].getSplitter()]
         params_grid['presort'] = [self.cromossomos[0].getPresort()]
         params_grid['max_depth'] = [self.cromossomos[0].getMaxDepth()]
-        params_grid['min_samples_split'] = [self.cromossomos[0].getMinSamplesSplit()]
-        params_grid['min_samples_leaf'] = [self.cromossomos[0].getMinSamplesLeaf()]
-        params_grid['min_weight_fraction_leaf'] = [self.cromossomos[0].getMinWeigthFractionLeaf()]
+        params_grid['min_samples_split'] = [
+            self.cromossomos[0].getMinSamplesSplit()]
+        params_grid['min_samples_leaf'] = [
+            self.cromossomos[0].getMinSamplesLeaf()]
+        params_grid['min_weight_fraction_leaf'] = [
+            self.cromossomos[0].getMinWeigthFractionLeaf()]
 
         return params_grid
