@@ -15,21 +15,22 @@ class Main():
     # #######################################################################################
     # Calculo da arvore com os parametros Default
 
+    # #######################################################################################
     # Carrega o dataset a ser usado nos testes
-    dataset = StellPlatesDataset()  
+    # dataset = StellPlatesDataset()  
     # dataset = datasets.load_iris()
-    # dataset = datasets.load_wine()
+    dataset = datasets.load_wine()
     # dataset = datasets.load_digits()
     # dataset = datasets.load_breast_cancer()
 
     # nome_base_dados = "cancer"
-
     # data = pd.read_csv('data/'+nome_base_dados+'.csv')
     # list = ['classe']
     # y = data.classe
     # X = data.drop(list,axis = 1)
     # print(y)
 
+    # #######################################################################################
     # Parâmetros Default para Grid Search
     param_grid_default = {
         "criterion": ['gini'],
@@ -82,26 +83,17 @@ class Main():
 
     FGA = FluidGeneticAlgorithm(taxa_aprendizado_global, taxa_aprendizado_individual, taxa_diversidade, tamanho_populacao_inicial)
 
-    # FGA.imprimirPopulacao()
-    print ('Individuo: {} - Size: {} - Acuracia: {}'.format(
-                FGA.cromossomos[0].individuo, FGA.cromossomos[0].size, FGA.cromossomos[0].acuracia))
-    
-    for i in range(1000):
+    FGA.imprimirPopulacao()
+    for i in range(50):
         FGA.operacao()
 
-    # FGA.imprimirPopulacao()
-    print ('Individuo: {} - Size: {} - Acuracia: {}'.format(
-                FGA.cromossomos[0].individuo, FGA.cromossomos[0].size, FGA.cromossomos[0].acuracia))
+    FGA.imprimirPopulacao()
+    # print ('Individuo: {} - Size: {} - Acuracia: {}'.format(FGA.cromossomos[0].individuo, FGA.cromossomos[0].size, FGA.cromossomos[0].acuracia))
     print("\n")
 
     # param_grid = FGA.getParamsGrid()
-    # # param_grid = FGA.getBestParamGrid()
-
+    # param_grid = FGA.getBestParamGrs
     # grid = GridSearchCV(clf, param_grid, cv=10, scoring='accuracy')
     # grid.fit(dataset.data, dataset.target)
     # print(grid.best_score_ * 100)
     # print(grid.best_params_)
-    
-    # {'min_samples_split': 294, 'max_depth': None, 'min_samples_leaf': 11,
-    #     'min_weight_fraction_leaf': 0.0, 'splitter': 'best', 'presort': False, 'criterion': 'entropy'}
-    # 10100100000001111100000010110000

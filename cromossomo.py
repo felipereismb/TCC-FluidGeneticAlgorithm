@@ -7,7 +7,7 @@
 # criterion                 :  0 = 'gini' ||  1 = 'entropy'
 # splitter                  :  0 = 'best' ||  1 = 'random'
 # max_depth                 :  0 =  None  || [1 -> 50] (int)
-# min_samples_split         : [2 -> 1000] (int)
+# min_samples_split         : [2 -> 255] (int)
 # min_samples_leaf          : [1 -> 1000] (int)
 # min_weight_fraction_leaf  : [0 -> 0.5] = (0 -> 5) * 0.1
 # presort                   :  0 = True || 1 = False
@@ -74,7 +74,7 @@ class Cromossomo():
     def getMinSamplesSplit(self):
         aux = 0
         soma = 0
-        for i in range(17, 7, -1):
+        for i in range(15, 7, -1):
             bit = int(self.individuo[i])
             if(bit == 1):
                 soma = soma + (2 ** aux)
@@ -82,15 +82,13 @@ class Cromossomo():
         
         if (soma < 2):
             return 2
-        elif(soma > 1000):
-            return 1000
         else:
             return soma
 
     def getMinSamplesLeaf(self):
         aux = 0
         soma = 0
-        for i in range(27, 17, -1):
+        for i in range(23, 15, -1):
             bit = int(self.individuo[i])
             if(bit == 1):
                 soma = soma + (2 ** aux)
@@ -98,15 +96,13 @@ class Cromossomo():
         
         if (soma < 1):
             return 1
-        elif(soma > 1000):
-            return 1000
         else:
             return soma
 
     def getMinWeigthFractionLeaf(self):
         soma = 0
         aux = 0
-        for i in range(30, 27, -1):
+        for i in range(26, 23, -1):
             bit = int (self.individuo[i])
             if(bit == 1):
                 soma = soma + (2 ** aux)
@@ -117,7 +113,7 @@ class Cromossomo():
                 return soma * 0.1
 
     def getPresort(self):
-        if(self.individuo[31] == '1'):
+        if(self.individuo[26] == '1'):
             return False
         else :
             return True
@@ -130,9 +126,9 @@ class Cromossomo():
     # A proposta de otimização é:
     # Obter maior valor de Acurácia e/ou Diminuir o tamanho da árvore final gerada
     def calcularFitness(self):
-        dataset = StellPlatesDataset()  # Carrega o dataset a ser usado nos testes
+        # dataset = StellPlatesDataset()  # Carrega o dataset a ser usado nos testes
         # dataset = datasets.load_iris()
-        # dataset = datasets.load_wine()
+        dataset = datasets.load_wine()
         # dataset = datasets.load_digits()
         # dataset = datasets.load_breast_cancer()
 
