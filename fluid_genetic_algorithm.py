@@ -3,11 +3,12 @@
 # Imports Necessários
 import random
 import numpy as np
+import csv
 from cromossomo import Cromossomo
 
 
 class FluidGeneticAlgorithm():
-
+    geracao = 0
     blue_print = []
     cromossomos = []
     taxa_aprendizado_global = 0
@@ -282,6 +283,7 @@ class FluidGeneticAlgorithm():
 
     # Ciclo do Algoritmo FGA
     def operacao(self):
+        self.geracao += 1
         pai1, pai2 = self.selecaoPaisElitismo()
         pai3, pai4 = self.selecaoPaisRandom()
 
@@ -304,6 +306,9 @@ class FluidGeneticAlgorithm():
         # Remove os 8 ultimo
         self.cromossomos = self.cromossomos[:-8]
         self.recalcularBluePrint()
+        self.salvarCSV()
+        # print("Geração: ", self.geracao)
+        # print("Individuo: {} - Size: {} - Acuracia: {}".format(self.cromossomos[0].individuo, self.cromossomos[0].size, self.cromossomos[0].acuracia))
 
     # Get Parametros para Grid Search
     def getParamsGrid(self):
@@ -332,7 +337,7 @@ class FluidGeneticAlgorithm():
 
         params_grid['max_depth'] = self.remove_repetidos(lista_max_depth)
         params_grid['min_samples_split'] = self.remove_repetidos(lista_min_samples_split)
-        params_grid['min_samples_leaf'] = self.remove_repetidos(ista_min_samples_leaf)
+        params_grid['min_samples_leaf'] = self.remove_repetidos(lista_min_samples_leaf)
         params_grid['min_weight_fraction_leaf'] = self.remove_repetidos(lista_min_weight_fraction_leaf)
 
         return params_grid
@@ -360,3 +365,23 @@ class FluidGeneticAlgorithm():
             self.cromossomos[0].getMinWeigthFractionLeaf()]
 
         return params_grid
+
+    def salvarCSV(self):
+        # nome = 'stellPlates.csv'
+        # nome = 'cancer.csv'
+        # nome = 'wine.csv'
+        nome = 'iris.csv'
+
+        arquivo = open('resultados/'+nome, 'r')
+        conteudo = arquivo.readlines()
+
+        string = str(self.geracao)+","+str(self.cromossomos[0].acuracia)+"%\n"
+
+        conteudo.append(string)
+
+        arquivo = open('resultados/'+nome, 'w')
+        arquivo.writelines(conteudo)
+
+        arquivo.close
+
+

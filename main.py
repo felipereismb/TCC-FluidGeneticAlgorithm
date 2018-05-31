@@ -18,8 +18,8 @@ class Main():
     # #######################################################################################
     # Carrega o dataset a ser usado nos testes
     # dataset = StellPlatesDataset()  
-    # dataset = datasets.load_iris()
-    dataset = datasets.load_wine()
+    dataset = datasets.load_iris()
+    # dataset = datasets.load_wine()
     # dataset = datasets.load_digits()
     # dataset = datasets.load_breast_cancer()
 
@@ -83,11 +83,11 @@ class Main():
 
     FGA = FluidGeneticAlgorithm(taxa_aprendizado_global, taxa_aprendizado_individual, taxa_diversidade, tamanho_populacao_inicial)
 
-    FGA.imprimirPopulacao()
+    # FGA.imprimirPopulacao()
     for i in range(50):
         FGA.operacao()
 
-    FGA.imprimirPopulacao()
+    # FGA.imprimirPopulacao()
     # print ('Individuo: {} - Size: {} - Acuracia: {}'.format(FGA.cromossomos[0].individuo, FGA.cromossomos[0].size, FGA.cromossomos[0].acuracia))
     print("\n")
 

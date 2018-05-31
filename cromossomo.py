@@ -2,13 +2,13 @@
 # Disponível em <https://www.openml.org/d/40982>
 
 # Exemplo de Cromossomo
-# 0 0 000000 0000000010 0000000001 101 0
+# 0 0 000000 00000000 00000000 101 0
 
 # criterion                 :  0 = 'gini' ||  1 = 'entropy'
 # splitter                  :  0 = 'best' ||  1 = 'random'
 # max_depth                 :  0 =  None  || [1 -> 50] (int)
 # min_samples_split         : [2 -> 255] (int)
-# min_samples_leaf          : [1 -> 1000] (int)
+# min_samples_leaf          : [1 -> 255] (int)
 # min_weight_fraction_leaf  : [0 -> 0.5] = (0 -> 5) * 0.1
 # presort                   :  0 = True || 1 = False
 
@@ -127,8 +127,8 @@ class Cromossomo():
     # Obter maior valor de Acurácia e/ou Diminuir o tamanho da árvore final gerada
     def calcularFitness(self):
         # dataset = StellPlatesDataset()  # Carrega o dataset a ser usado nos testes
-        # dataset = datasets.load_iris()
-        dataset = datasets.load_wine()
+        dataset = datasets.load_iris()
+        # dataset = datasets.load_wine()
         # dataset = datasets.load_digits()
         # dataset = datasets.load_breast_cancer()
 
