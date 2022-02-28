@@ -18,6 +18,30 @@ As Árvores de Decisão consistem em "nós" que formam uma árvore, o que signif
 
 A árvore de decisão resultante a partir do a algoritmo CART sempre é binária, o critério utilizado para calcular a impureza de um nó é o índice Gini, o qual mede a heterogeneidade dos dados.
 
+Optou-se por manipular os seguintes parâmetros do algoritmo CART:
+
+![image](https://user-images.githubusercontent.com/17303936/156027741-ab12e3b9-1849-43be-8ba7-f0217e082649.png)
+
+## Base de dados
+### Steel Plates
+Esta base de dados contém dados de falhas na produção de placas de aço, sendo 1941 exemplos descritos por 27 atributos e classificados em 7 classes. Esses atributos descrevem as propriedades físicas das placas de aço, como tamanho do defeito, posição da falha, refletância da luz da superfície, tipo de material, etc. Todos os atributos são numéricos.
+
+### Breast Cancer
+Nesta base de dados relata-se sobre a ocorrência ou não do câncer de mama, estão incluídos 201 instâncias de uma classe e 85 instâncias de outra classe. As instâncias são descritas por 9 atributos, alguns dos quais são lineares e alguns são nominais.
+
+### Wine
+Está base de dados mostram os resultados de uma análise química de vinhos mas derivados de três diferentes cultivares. A análise determinou as quantidades de 13 constituintes encontrados em cada um dos três tipos de vinhos. Foram registadas 178 instancias.
+
+### Iris
+Este é talvez o banco de dados mais conhecido encontrado na literatura sobre reconhecimento de padrões. O conjunto de dados contém 3 classes de 50 instâncias cada, onde cada classe se refere a um tipo de planta da íris. 
+
+### Isolet
+Este conjunto de dados foi gerado da seguinte forma. 150 voluntários falaram o nome de cada letra do alfabeto duas vezes
+
+### Madelon
+Este conjunto de dados contém pontos de dados agrupados em 32 agrupamentos colocados nos vértices de um hipercubo de cinco dimensões e rotulados aleatoriamente com +1 ou -1. As cinco dimensões constituem 5 características informativas, assim, 15 combinações lineares desses recursos foram adicionadas para formar um conjunto de 20 recursos informativos.
+
+
 ## Fluid Genetic Algorithm
 O algoritmo FGA possui duas grandes diferenças em relação ao AG padrão, a primeira diferença consiste no fato de não termos cromossomo e indivíduos como uma única entidade, com isso os autores afirmam que, biologicamente, o FGA está mais próximo da realidade do que acontece no mundo genético, onde cada cromossomo pode ter muitos indivíduos diferentes associados a ele. Assim, no FGA um indivíduo é associado aleatoriamente a um cromossomo. A segunda diferença é que nessa nova proposta de AG não é necessário o operador mutação, pois, o algoritmo fornece uma diversidade populacional inteligente.
 
