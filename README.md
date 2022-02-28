@@ -25,6 +25,9 @@ O cromossomo não é mais um conjunto de genes que representa uma possível solu
 
 ![image](https://user-images.githubusercontent.com/17303936/156014864-cfd4c927-bc87-4d72-8df5-6093eacb9290.png)
 
+![image](https://user-images.githubusercontent.com/17303936/156025833-92edcf7b-f580-4893-8667-d22294ebed17.png)
+
+
 
 
 
